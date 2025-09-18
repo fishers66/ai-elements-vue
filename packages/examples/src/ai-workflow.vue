@@ -1,19 +1,33 @@
 <script setup lang="ts">
-import type { ChainOfThoughtStep } from '@repo/elements/chain-of-thought'
-import type { ReasoningStep } from '@repo/elements/reasoning'
-import type { SuggestionItem } from '@repo/elements/suggestion'
-import type { TaskItem } from '@repo/elements/task'
-import { ChainOfThought } from '@repo/elements/chain-of-thought'
+import type { ChainOfThoughtStep as ChainOfThoughtStepType, ReasoningStep, SuggestionItem, TaskItem } from '@repo/elements'
+import {
+  ChainOfThought,
+  ChainOfThoughtContent,
+  ChainOfThoughtHeader,
+  ChainOfThoughtStep,
+
+  Reasoning,
+  ReasoningContent,
+
+  ReasoningTrigger,
+  Response,
+  Task,
+  TaskContent,
+  TaskItem as TaskItemComponent,
+  TaskTrigger,
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolInput,
+  ToolOutput,
+
+} from '@repo/elements'
 import { Conversation } from '@repo/elements/conversation'
 import { Message, MessageAvatar, MessageContent } from '@repo/elements/message'
-import { Reasoning } from '@repo/elements/reasoning'
-import { Response } from '@repo/elements/response'
 import { Suggestions } from '@repo/elements/suggestion'
-import { TaskList } from '@repo/elements/task'
-import { ToolCall } from '@repo/elements/tool'
 import { ref } from 'vue'
 
-const chain: ChainOfThoughtStep[] = [
+const chain: ChainOfThoughtStepType[] = [
   {
     label: 'Understand the request',
     content: 'Parse the user goal and identify constraints for the travel plan.',
@@ -32,7 +46,7 @@ const chain: ChainOfThoughtStep[] = [
   },
 ]
 
-const reasoningSteps: ReasoningStep[] = [
+const _reasoningSteps: ReasoningStep[] = [
   {
     content: 'User wants a 3-day Kyoto trip with focus on temples and vegetarian food.',
   },
@@ -126,27 +140,64 @@ function handleSelect(item: SuggestionItem) {
             Here is a tailored Kyoto itinerary for your three-day stay, including cultural highlights, hands-on activities, and
             vegetarian dining options.
           </Response>
-          <Reasoning
-            :steps="reasoningSteps"
-            thinking
-            duration="4 seconds"
-            description="Let me think about this problem step by step."
-            meta="Travel planner · GPT-4.1 mini"
-            collapsible
-          />
-          <ChainOfThought :steps="chain" :default-open="true" />
-          <ToolCall
-            name="weather.lookup"
-            description="Fetches 7-day weather outlook"
-            status="success"
-            latency="612 ms"
-            :request="{ city: 'Kyoto', start: '2025-05-12', end: '2025-05-14' }"
-            :response="{
-              summary: 'Light rain on day 2, otherwise clear.',
-              highsCelsius: [22, 20, 23],
-            }"
-          />
-          <TaskList :tasks="tasks" />
+          <Reasoning :is-streaming="true" :duration="4" default-open>
+            <ReasoningTrigger />
+            <ReasoningContent>
+              Let me think about this problem step by step.
+
+              I need to plan a comprehensive 3-day itinerary for Kyoto that includes:
+              - Temple visits and cultural sites
+              - Vegetarian dining options
+              - Indoor activities as rainy day alternatives
+              - Transportation between locations
+
+              The trip is scheduled for mid-May, which has pleasant spring weather but occasional rain.
+            </ReasoningContent>
+          </Reasoning>
+
+          <ChainOfThought default-open>
+            <ChainOfThoughtHeader>
+              Travel Planning Process
+            </ChainOfThoughtHeader>
+            <ChainOfThoughtContent>
+              <ChainOfThoughtStep
+                v-for="step in chain"
+                :key="step.label"
+                :label="step.label"
+                :description="step.content"
+                :status="step.status"
+              />
+            </ChainOfThoughtContent>
+          </ChainOfThought>
+          <Tool default-open>
+            <ToolHeader
+              type="weather.lookup"
+              state="output-available"
+            />
+            <ToolContent>
+              <ToolInput :input="{ city: 'Kyoto', start: '2025-05-12', end: '2025-05-14' }" />
+              <ToolOutput
+                :output="{
+                  summary: 'Light rain on day 2, otherwise clear.',
+                  highsCelsius: [22, 20, 23],
+                }"
+              />
+            </ToolContent>
+          </Tool>
+          <div class="space-y-2">
+            <Task v-for="task in tasks" :key="task.id" default-open>
+              <TaskTrigger :title="task.title" />
+              <TaskContent>
+                <TaskItemComponent>{{ task.description }}</TaskItemComponent>
+                <TaskItemComponent v-if="task.status">
+                  Status: {{ task.status }}
+                </TaskItemComponent>
+                <TaskItemComponent v-if="task.progress">
+                  Progress: {{ task.progress }}%
+                </TaskItemComponent>
+              </TaskContent>
+            </Task>
+          </div>
           <div class="space-y-2">
             <p class="text-sm font-medium text-foreground">
               Quick actions

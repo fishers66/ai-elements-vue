@@ -10,6 +10,7 @@ import Reasoning from '~/examples/reasoning.vue'
 import Response from '~/examples/response.vue'
 import Suggestion from '~/examples/suggestion.vue'
 import Task from '~/examples/task.vue'
+import TimelineReasoning from '~/examples/timeline-reasoning.vue'
 import Tool from '~/examples/tool.vue'
 
 const components = [
@@ -23,6 +24,7 @@ const components = [
   { name: 'Reasoning', Component: Reasoning },
   { name: 'Suggestions', Component: Suggestion },
   { name: 'TaskList', Component: Task },
+  { name: 'Timeline Reasoning', Component: TimelineReasoning },
   { name: 'ToolCall', Component: Tool },
 ]
 </script>

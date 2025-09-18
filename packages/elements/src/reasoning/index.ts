@@ -1,2 +1,5 @@
-export { default as Reasoning } from './Reasoning.vue'
+export { default as ReasoningContent } from '../reasoning-content.vue'
+export * from '../reasoning-context'
+export { default as ReasoningTrigger } from '../reasoning-trigger.vue'
+export { default as Reasoning } from '../reasoning.vue'
 export type { ReasoningStep } from './types'

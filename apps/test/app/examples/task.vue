@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TaskItem } from '@repo/elements/task'
-import { TaskList } from '@repo/elements/task'
+import { Task, TaskContent, TaskItem as TaskItemComponent, TaskTrigger } from '@repo/elements'
 
 const tasks: TaskItem[] = [
   {
@@ -42,5 +42,32 @@ const tasks: TaskItem[] = [
 </script>
 
 <template>
-  <TaskList :tasks="tasks" />
+  <div class="space-y-4">
+    <h2 class="text-lg font-semibold">
+      Task Examples
+    </h2>
+    <div class="space-y-2">
+      <Task v-for="task in tasks" :key="task.id" default-open>
+        <TaskTrigger :title="task.title" />
+        <TaskContent>
+          <TaskItemComponent>{{ task.description }}</TaskItemComponent>
+          <TaskItemComponent v-if="task.status">
+            Status: {{ task.status }}
+          </TaskItemComponent>
+          <TaskItemComponent v-if="task.progress">
+            Progress: {{ task.progress }}%
+          </TaskItemComponent>
+          <TaskItemComponent v-if="task.tags?.length">
+            Tags: {{ task.tags.join(', ') }}
+          </TaskItemComponent>
+          <TaskItemComponent v-if="task.assignee">
+            Assignee: {{ task.assignee }}
+          </TaskItemComponent>
+          <TaskItemComponent v-if="task.dueDate">
+            Due: {{ task.dueDate }}
+          </TaskItemComponent>
+        </TaskContent>
+      </Task>
+    </div>
+  </div>
 </template>
