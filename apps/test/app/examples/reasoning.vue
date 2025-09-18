@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Reasoning, ReasoningContent, ReasoningTrigger } from '@repo/elements'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const isStreamingExample1 = ref(false)
 const isStreamingExample2 = ref(true)
@@ -15,16 +15,19 @@ const textFragments = [
   'Analyzing the best approach for this travel plan...\n\nI\'m considering multiple factors including seasonal weather patterns, temple visiting hours, and local cuisine preferences.\n\nFor a 3-day Kyoto trip in mid-May:\n\n1. Weather: Spring season with pleasant temperatures (18-25°C)\n2. Temple visits: Early morning recommended to avoid crowds  \n3. Vegetarian options: Buddhist temple cuisine and modern vegan restaurants available\n\nBased on this analysis, I\'ll create a balanced itinerary with cultural exploration, nature experiences, and authentic dining opportunities.',
 ]
 
-const streamingInterval = setInterval(() => {
-  if (textIndex < textFragments.length - 1) {
-    textIndex++
-    streamingText.value = textFragments[textIndex]
-  }
-  else {
-    clearInterval(streamingInterval)
-    isStreamingExample2.value = false
-  }
-}, 1500)
+// Only run streaming simulation on client side
+onMounted(() => {
+  const streamingInterval = setInterval(() => {
+    if (textIndex < textFragments.length - 1) {
+      textIndex++
+      streamingText.value = textFragments[textIndex]
+    }
+    else {
+      clearInterval(streamingInterval)
+      isStreamingExample2.value = false
+    }
+  }, 1500)
+})
 </script>
 
 <template>
