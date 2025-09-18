@@ -17,10 +17,19 @@ const steps: ReasoningStep[] = [
 </script>
 
 <template>
-  <Reasoning
-    :steps="steps"
-    thinking
-    duration="4 seconds"
-    description="Let me think about this problem step by step."
-  />
+  <div class="space-y-6">
+    <Reasoning
+      title="Reasoning"
+      description="Let me think about this problem step by step."
+      duration="4 seconds"
+      meta="Travel planner · GPT-4.1 mini"
+      thinking
+    />
+    <Reasoning
+      title="Thought"
+      :steps="steps"
+      duration="4 seconds"
+      collapsible
+    />
+  </div>
 </template>

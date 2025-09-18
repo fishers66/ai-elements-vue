@@ -31,8 +31,12 @@ watch(
 )
 
 const rootClasses = computed(() =>
-  cn('rounded-xl border bg-card text-card-foreground shadow-sm', props.class),
+  cn('rounded-2xl border border-border/70 bg-card/80 text-card-foreground shadow-sm backdrop-blur', props.class),
 )
+
+const headerClasses = computed(() => 'flex items-center justify-between gap-2 px-5 py-4')
+
+const contentClasses = computed(() => 'border-t border-border/60 px-5 pb-5 pt-4 text-sm text-muted-foreground')
 
 function statusVariant(status?: ChainOfThoughtStatus) {
   switch (status) {
@@ -58,6 +62,15 @@ function statusLabel(status?: ChainOfThoughtStatus) {
   }
 }
 
+function indicatorClasses(step: ChainOfThoughtStep) {
+  return cn(
+    'flex size-6 items-center justify-center rounded-full border border-border/70 bg-background/90 text-muted-foreground transition',
+    step.status === 'complete' && 'border-emerald-200 bg-emerald-500/10 text-emerald-600',
+    step.status === 'failed' && 'border-destructive/40 bg-destructive/10 text-destructive',
+    step.status === 'thinking' && 'border-primary/40 bg-primary/10 text-primary',
+  )
+}
+
 function statusIcon(step: ChainOfThoughtStep) {
   if (step.icon)
     return step.icon
@@ -80,15 +93,15 @@ function statusIcon(step: ChainOfThoughtStep) {
     v-model:open="open"
     :class="rootClasses"
   >
-    <div class="flex items-center justify-between gap-2 px-4 py-3">
-      <div class="flex items-center gap-2 text-sm font-medium">
+    <div :class="headerClasses">
+      <div class="text-sm font-medium">
         {{ props.title }}
       </div>
       <div class="flex items-center gap-2">
         <Badge
           v-if="props.steps.length"
           variant="outline"
-          class="text-xs"
+          class="rounded-full border-border/70 px-2.5 py-1 text-xs text-muted-foreground"
         >
           {{ props.steps.length }} steps
         </Badge>
@@ -103,20 +116,29 @@ function statusIcon(step: ChainOfThoughtStep) {
       </div>
     </div>
     <CollapsibleContent>
-      <ol class="space-y-3 border-t px-4 py-3 text-sm">
+      <ol :class="contentClasses">
         <li
           v-for="(step, index) in props.steps"
           :key="step.id ?? index"
-          class="flex gap-3 rounded-lg border bg-muted/40 p-3"
+          class="relative flex gap-3 pl-10"
         >
-          <component
-            :is="statusIcon(step)"
-            class="mt-1 size-4 flex-shrink-0 text-muted-foreground"
-            :class="{
-              'animate-spin': !step.icon && step.status !== 'complete' && step.status !== 'failed',
-            }"
-          />
-          <div class="space-y-1">
+          <div class="absolute left-0 top-1 flex flex-col items-center">
+            <div :class="indicatorClasses(step)">
+              <component
+                :is="statusIcon(step)"
+                class="size-3"
+                :class="{
+                  'animate-spin': !step.icon && step.status !== 'complete' && step.status !== 'failed',
+                }"
+              />
+            </div>
+            <span
+              v-if="index < props.steps.length - 1"
+              aria-hidden="true"
+              class="mt-2 h-full w-px bg-border"
+            />
+          </div>
+          <div class="space-y-2">
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span class="font-medium">
                 {{ step.label }}
@@ -125,7 +147,7 @@ function statusIcon(step: ChainOfThoughtStep) {
                 v-if="step.status"
                 size="sm"
                 :variant="statusVariant(step.status)"
-                class="text-[10px]"
+                class="rounded-full border-border/70 px-2 py-0.5 text-[10px]"
               >
                 {{ statusLabel(step.status) }}
               </Badge>
@@ -155,32 +177,41 @@ function statusIcon(step: ChainOfThoughtStep) {
     v-else
     :class="rootClasses"
   >
-    <div class="flex items-center justify-between gap-2 px-4 py-3">
+    <div :class="headerClasses">
       <div class="text-sm font-medium">
         {{ props.title }}
       </div>
       <Badge
         v-if="props.steps.length"
         variant="outline"
-        class="text-xs"
+        class="rounded-full border-border/70 px-2.5 py-1 text-xs text-muted-foreground"
       >
         {{ props.steps.length }} steps
       </Badge>
     </div>
-    <ol class="space-y-3 border-t px-4 py-3 text-sm">
+    <ol :class="contentClasses">
       <li
         v-for="(step, index) in props.steps"
         :key="step.id ?? index"
-        class="flex gap-3 rounded-lg border bg-muted/40 p-3"
+        class="relative flex gap-3 pl-10"
       >
-        <component
-          :is="statusIcon(step)"
-          class="mt-1 size-4 flex-shrink-0 text-muted-foreground"
-          :class="{
-            'animate-spin': !step.icon && step.status !== 'complete' && step.status !== 'failed',
-          }"
-        />
-        <div class="space-y-1">
+        <div class="absolute left-0 top-1 flex flex-col items-center">
+          <div :class="indicatorClasses(step)">
+            <component
+              :is="statusIcon(step)"
+              class="size-3"
+              :class="{
+                'animate-spin': !step.icon && step.status !== 'complete' && step.status !== 'failed',
+              }"
+            />
+          </div>
+          <span
+            v-if="index < props.steps.length - 1"
+            aria-hidden="true"
+            class="mt-2 h-full w-px bg-border"
+          />
+        </div>
+        <div class="space-y-2">
           <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span class="font-medium">
               {{ step.label }}
@@ -189,7 +220,7 @@ function statusIcon(step: ChainOfThoughtStep) {
               v-if="step.status"
               size="sm"
               :variant="statusVariant(step.status)"
-              class="text-[10px]"
+              class="rounded-full border-border/70 px-2 py-0.5 text-[10px]"
             >
               {{ statusLabel(step.status) }}
             </Badge>

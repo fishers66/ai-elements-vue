@@ -131,6 +131,8 @@ function handleSelect(item: SuggestionItem) {
             thinking
             duration="4 seconds"
             description="Let me think about this problem step by step."
+            meta="Travel planner · GPT-4.1 mini"
+            collapsible
           />
           <ChainOfThought :steps="chain" :default-open="true" />
           <ToolCall

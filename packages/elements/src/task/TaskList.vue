@@ -18,6 +18,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const classes = computed(() => cn('space-y-4', props.class))
 
+const cardClasses = 'rounded-2xl border border-border/70 bg-card/80 p-5 text-sm text-muted-foreground shadow-sm backdrop-blur'
+
+const headerClasses = 'flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'
+
+const metaClasses = 'flex flex-col items-start gap-1 text-xs text-muted-foreground sm:items-end'
+
 function normalizedProgress(task: TaskItem) {
   if (typeof task.progress !== 'number')
     return undefined
@@ -60,12 +66,15 @@ function statusLabel(status: TaskStatus = 'todo') {
     <div
       v-for="(task, index) in props.tasks"
       :key="task.id ?? index"
-      class="rounded-2xl border border-border/70 bg-card/80 p-5 shadow-sm"
+      :class="cardClasses"
     >
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div :class="headerClasses">
         <div class="space-y-2">
           <div class="flex items-center gap-2">
-            <Badge :variant="statusVariant(task.status)" class="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] uppercase tracking-wide">
+            <Badge
+              :variant="statusVariant(task.status)"
+              class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] uppercase tracking-wide"
+            >
               {{ statusLabel(task.status) }}
             </Badge>
           </div>
@@ -75,13 +84,13 @@ function statusLabel(status: TaskStatus = 'todo') {
             </p>
             <p
               v-if="task.description"
-              class="text-sm leading-6 text-muted-foreground"
+              class="text-sm leading-6"
             >
               {{ task.description }}
             </p>
           </div>
         </div>
-        <div class="flex flex-col items-start gap-1 text-xs text-muted-foreground sm:items-end">
+        <div :class="metaClasses">
           <span v-if="task.dueDate">Due {{ task.dueDate }}</span>
           <span v-if="task.assignee">@{{ task.assignee }}</span>
         </div>
@@ -114,7 +123,7 @@ function statusLabel(status: TaskStatus = 'todo') {
       </div>
       <div
         v-if="task.tools?.length"
-        class="mt-4 space-y-3 border-t border-dashed pt-4"
+        class="mt-4 space-y-3 border-t border-border/60 pt-4"
       >
         <ToolCallComponent
           v-for="tool in task.tools"
