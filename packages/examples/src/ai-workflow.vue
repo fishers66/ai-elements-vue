@@ -70,6 +70,7 @@ const tasks = ref<TaskItem[]>([
     status: 'done',
     progress: 100,
     assignee: 'assistant',
+    dueDate: 'Today',
   },
   {
     id: 'weather',
@@ -78,6 +79,20 @@ const tasks = ref<TaskItem[]>([
     status: 'in-progress',
     progress: 60,
     tags: ['weather', 'validation'],
+    tools: [
+      {
+        id: 'weather.lookup',
+        name: 'weather.lookup',
+        description: 'Fetches 7-day weather outlook',
+        status: 'success',
+        latency: '612 ms',
+        request: { city: 'Kyoto', start: '2025-05-12', end: '2025-05-14' },
+        response: {
+          summary: 'Light rain on day 2, otherwise clear.',
+          highsCelsius: [22, 20, 23],
+        },
+      },
+    ],
   },
   {
     id: 'restaurants',
@@ -111,7 +126,12 @@ function handleSelect(item: SuggestionItem) {
             Here is a tailored Kyoto itinerary for your three-day stay, including cultural highlights, hands-on activities, and
             vegetarian dining options.
           </Response>
-          <Reasoning :steps="reasoningSteps" thinking />
+          <Reasoning
+            :steps="reasoningSteps"
+            thinking
+            duration="4 seconds"
+            description="Let me think about this problem step by step."
+          />
           <ChainOfThought :steps="chain" :default-open="true" />
           <ToolCall
             name="weather.lookup"

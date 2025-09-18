@@ -21,8 +21,10 @@ const emit = defineEmits<{
 
 const classes = computed(() =>
   cn(
-    'w-full justify-start px-3 py-2 text-left text-sm',
-    props.active ? 'border border-primary bg-primary/10' : 'border border-transparent hover:border-border',
+    'group relative w-full justify-start overflow-hidden rounded-xl border border-border/70 bg-background/80 px-4 py-3 text-left text-sm shadow-sm transition hover:border-border/90 hover:bg-primary/5 focus-visible:ring-2 focus-visible:ring-primary/30',
+    props.active
+      ? 'border-primary bg-primary/10 ring-1 ring-primary/40'
+      : 'border-border/60',
     props.class,
   ),
 )
@@ -33,13 +35,15 @@ const classes = computed(() =>
     variant="ghost"
     :disabled="props.suggestion.disabled"
     :class="classes"
+    :aria-pressed="props.active"
     @click="emit('select', props.suggestion)"
   >
-    <div class="flex w-full items-center gap-3">
+    <div class="flex w-full items-start gap-3">
       <component
         :is="props.suggestion.icon"
         v-if="props.suggestion.icon"
-        class="size-4 text-muted-foreground"
+        class="mt-0.5 size-4 flex-shrink-0 text-muted-foreground transition group-hover:text-foreground"
+        :class="props.suggestion.disabled ? 'opacity-60' : ''"
       />
       <div class="flex-1 space-y-1">
         <div class="flex items-center justify-between gap-2">
@@ -55,12 +59,15 @@ const classes = computed(() =>
         </div>
         <p
           v-if="props.suggestion.description"
-          class="text-xs text-muted-foreground"
+          class="text-xs leading-relaxed text-muted-foreground"
         >
           {{ props.suggestion.description }}
         </p>
       </div>
-      <CornerDownLeft class="size-4 text-muted-foreground" />
+      <CornerDownLeft
+        class="mt-0.5 size-4 flex-shrink-0 text-muted-foreground transition group-hover:text-foreground"
+        :class="props.suggestion.disabled ? 'opacity-60' : ''"
+      />
     </div>
   </Button>
 </template>

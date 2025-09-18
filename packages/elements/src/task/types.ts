@@ -1,3 +1,5 @@
+import type { ToolCall } from '../tool/types'
+
 export type TaskStatus = 'todo' | 'in-progress' | 'done' | 'blocked'
 
 export interface TaskItem {
@@ -9,4 +11,5 @@ export interface TaskItem {
   assignee?: string
   dueDate?: string
   tags?: string[]
+  tools?: ToolCall[]
 }

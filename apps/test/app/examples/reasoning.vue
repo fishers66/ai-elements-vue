@@ -17,5 +17,10 @@ const steps: ReasoningStep[] = [
 </script>
 
 <template>
-  <Reasoning :steps="steps" thinking />
+  <Reasoning
+    :steps="steps"
+    thinking
+    duration="4 seconds"
+    description="Let me think about this problem step by step."
+  />
 </template>

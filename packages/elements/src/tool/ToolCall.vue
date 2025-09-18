@@ -3,16 +3,73 @@ import type { ToolCall, ToolCallStatus } from './types'
 import { Badge } from '@repo/shadcn-vue/components/ui/badge'
 import { cn } from '@repo/shadcn-vue/lib/utils'
 import { Check, LoaderCircle, X } from 'lucide-vue-next'
-import { computed } from 'vue'
+import { computed, useSlots } from 'vue'
 
 interface Props extends ToolCall {
   class?: string
+  variant?: 'default' | 'inset'
+  requestLabel?: string
+  responseLabel?: string
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'default',
+  requestLabel: 'Request',
+  responseLabel: 'Response',
+})
+
+const slots = useSlots()
+
+const iconComponent = computed(() => props.icon ?? statusIcon(props.status))
+const animateStatus = computed(
+  () => !props.icon && (props.status === 'pending' || props.status === 'running'),
+)
 
 const classes = computed(() =>
-  cn('rounded-xl border bg-card text-card-foreground shadow-sm', props.class),
+  cn(
+    'group rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm transition',
+    props.variant === 'inset' && 'rounded-xl border border-border/60 bg-muted/40 text-foreground shadow-none',
+    props.class,
+  ),
+)
+
+const headerClasses = computed(() =>
+  cn(
+    'flex items-start justify-between gap-3',
+    props.variant === 'inset' ? 'px-4 py-3' : 'px-5 py-4',
+  ),
+)
+
+const bodyClasses = computed(() =>
+  cn(
+    'grid gap-4 border-t',
+    props.variant === 'inset'
+      ? 'border-border/60 bg-transparent px-4 py-3 text-sm text-muted-foreground'
+      : 'border-border/70 bg-muted/40 px-5 py-4 text-sm text-muted-foreground',
+  ),
+)
+
+const sectionTitleClasses = computed(() =>
+  cn('text-xs font-medium uppercase tracking-wide text-foreground/70'),
+)
+
+const iconWrapperClasses = computed(() =>
+  cn(
+    'flex size-9 items-center justify-center rounded-full transition',
+    props.variant === 'inset' ? 'bg-background/80' : 'bg-muted',
+    props.status === 'success' && 'bg-emerald-500/15 text-emerald-600',
+    props.status === 'error' && 'bg-destructive/10 text-destructive',
+    props.status === 'running' && 'bg-primary/10 text-primary',
+  ),
+)
+
+const iconClasses = computed(() =>
+  cn(
+    'size-4 text-muted-foreground transition',
+    props.status === 'success' && 'text-emerald-600',
+    props.status === 'error' && 'text-destructive',
+    (props.status === 'pending' || props.status === 'running') && 'text-primary',
+  ),
 )
 
 function statusLabel(status?: ToolCallStatus) {
@@ -73,52 +130,63 @@ function formatValue(value?: unknown) {
 
 const formattedRequest = computed(() => formatValue(props.request))
 const formattedResponse = computed(() => formatValue(props.response))
+const hasDetails = computed(() => Boolean(formattedRequest.value || formattedResponse.value))
+const hasSlotContent = computed(() => Boolean(slots.default))
+const showBody = computed(() => hasDetails.value || hasSlotContent.value)
 </script>
 
 <template>
   <div :class="classes">
-    <div class="flex items-start justify-between gap-2 px-4 py-3">
+    <div :class="headerClasses">
       <div class="flex items-start gap-3">
-        <component
-          :is="props.icon ?? statusIcon(props.status)"
-          class="mt-1 size-5 text-muted-foreground"
-          :class="{
-            'animate-spin': !props.icon && props.status !== 'success' && props.status !== 'error',
-          }"
-        />
-        <div>
-          <p class="text-sm font-medium">
+        <div :class="iconWrapperClasses">
+          <component
+            :is="iconComponent"
+            :class="[
+              iconClasses,
+              { 'animate-spin text-primary': animateStatus },
+            ]"
+          />
+        </div>
+        <div class="space-y-1">
+          <p class="text-sm font-semibold text-foreground">
             {{ props.name }}
           </p>
           <p
-            v-if="props.description"
-            class="text-xs text-muted-foreground"
+            v-if="props.description || props.latency"
+            class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground"
           >
-            {{ props.description }}
+            <span v-if="props.description">{{ props.description }}</span>
+            <span v-if="props.description && props.latency" aria-hidden="true">•</span>
+            <span v-if="props.latency">{{ props.latency }}</span>
           </p>
         </div>
       </div>
-      <div class="flex flex-col items-end gap-1 text-xs text-muted-foreground">
-        <Badge :variant="statusVariant(props.status)">
-          {{ statusLabel(props.status) }}
-        </Badge>
-        <span v-if="props.latency">{{ props.latency }}</span>
-      </div>
+      <Badge
+        :variant="statusVariant(props.status)"
+        class="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] uppercase tracking-wide"
+      >
+        <component :is="statusIcon(props.status)" class="size-3" />
+        {{ statusLabel(props.status) }}
+      </Badge>
     </div>
-    <div class="grid gap-4 border-t px-4 py-3 text-sm text-muted-foreground">
-      <div v-if="formattedRequest" class="space-y-1">
-        <p class="text-xs font-medium uppercase tracking-wide text-foreground/80">
-          Request
+    <div
+      v-if="showBody"
+      :class="bodyClasses"
+    >
+      <div v-if="formattedRequest" class="space-y-2">
+        <p :class="sectionTitleClasses">
+          {{ props.requestLabel }}
         </p>
-        <pre class="max-h-48 overflow-auto rounded-lg bg-muted p-3 text-xs">
+        <pre class="max-h-48 overflow-auto rounded-lg bg-background/80 p-3 text-xs text-foreground/80 shadow-inner">
           <code>{{ formattedRequest }}</code>
         </pre>
       </div>
-      <div v-if="formattedResponse" class="space-y-1">
-        <p class="text-xs font-medium uppercase tracking-wide text-foreground/80">
-          Response
+      <div v-if="formattedResponse" class="space-y-2">
+        <p :class="sectionTitleClasses">
+          {{ props.responseLabel }}
         </p>
-        <pre class="max-h-48 overflow-auto rounded-lg bg-muted p-3 text-xs">
+        <pre class="max-h-48 overflow-auto rounded-lg bg-background/80 p-3 text-xs text-foreground/80 shadow-inner">
           <code>{{ formattedResponse }}</code>
         </pre>
       </div>

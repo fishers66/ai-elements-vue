@@ -17,6 +17,17 @@ const tasks: TaskItem[] = [
     status: 'in-progress',
     progress: 60,
     tags: ['weather', 'validation'],
+    assignee: 'assistant',
+    dueDate: 'Today',
+    tools: [
+      {
+        id: 'weather.lookup',
+        name: 'weather.lookup',
+        description: 'Fetches 7-day weather outlook',
+        status: 'running',
+        request: { city: 'Kyoto', date: '2025-05-13' },
+      },
+    ],
   },
   {
     id: 'dining',
