@@ -1,3 +1,4 @@
+export { default as AIWorkflow } from './ai-workflow.vue'
 export { default as Conversation } from './conversation.vue'
 export { default as MessageMarkdown } from './message-markdown.vue'
 export { default as Message } from './message.vue'

@@ -92,11 +92,12 @@ AI Elements Vue includes the following components:
 | `image` | ❌ 未完成 | AI-generated image display component |
 | `inline-citation` | ❌ 未完成 | Inline source citations |
 | `loader` | ❌ 未完成 | Loading states for AI operations |
-| `reasoning` | ❌ 未完成 | Display AI reasoning and thought processes |
+| `reasoning` | ✅ 已完成 | Display AI reasoning and thought processes |
 | `source` | ❌ 未完成 | Source attribution component |
-| `suggestion` | ❌ 未完成 | Quick action suggestions |
-| `task` | ❌ 未完成 | Task completion tracking |
-| `tool` | ❌ 未完成 | Tool usage visualization |
+| `suggestion` | ✅ 已完成 | Quick action suggestions |
+| `task` | ✅ 已完成 | Task completion tracking |
+| `tool` | ✅ 已完成 | Tool usage visualization |
+| `chain-of-thought` | ✅ 已完成 | Transparent reasoning timeline |
 
 ## How It Works
 
