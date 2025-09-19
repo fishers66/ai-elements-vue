@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ChainOfThoughtContextValue } from './chain-of-thought-context'
+import { Collapsible } from '@repo/shadcn-vue/components/ui/collapsible'
 import { cn } from '@repo/shadcn-vue/lib/utils'
 import { computed, provide, ref, watch } from 'vue'
 import { ChainOfThoughtContextKey } from './chain-of-thought-context'
@@ -40,11 +41,15 @@ const contextValue = computed<ChainOfThoughtContextValue>(() => ({
   setIsOpen,
 }))
 
-provide(ChainOfThoughtContextKey, contextValue.value)
+provide(ChainOfThoughtContextKey, contextValue)
 </script>
 
 <template>
-  <div :class="cn('not-prose max-w-prose space-y-4', props.class)">
+  <Collapsible
+    :class="cn('not-prose max-w-prose space-y-4', props.class)"
+    :open="isOpen"
+    @update:open="setIsOpen"
+  >
     <slot />
-  </div>
+  </Collapsible>
 </template>
