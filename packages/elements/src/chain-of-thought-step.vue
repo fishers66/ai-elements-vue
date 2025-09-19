@@ -8,6 +8,7 @@ interface ChainOfThoughtStepProps {
   icon?: Component
   label: string
   description?: string
+  content?: string
   status?: 'complete' | 'active' | 'pending'
   class?: string
 }
@@ -38,9 +39,11 @@ const stepClass = computed(() => cn(
       <div class="-mx-px absolute top-7 bottom-0 left-1/2 w-px bg-border" />
     </div>
     <div class="flex-1 space-y-2">
-      <div>{{ props.label }}</div>
-      <div v-if="props.description" class="text-muted-foreground text-xs">
-        {{ props.description }}
+      <div class="font-medium">
+        {{ props.label }}
+      </div>
+      <div v-if="props.description || props.content" class="text-muted-foreground text-sm">
+        {{ props.description || props.content }}
       </div>
       <slot />
     </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ChainOfThoughtStep as ChainOfThoughtStepType, ReasoningStep, SuggestionItem, TaskItem } from '@repo/elements'
+import type { ReasoningStep, SuggestionItem, TaskItem } from '@repo/elements'
 import {
   ChainOfThought,
   ChainOfThoughtContent,
@@ -25,24 +25,27 @@ import {
 import { Conversation } from '@repo/elements/conversation'
 import { Message, MessageAvatar, MessageContent } from '@repo/elements/message'
 import { Suggestions } from '@repo/elements/suggestion'
+import { CheckCircle, Clock, Search } from 'lucide-vue-next'
 import { ref } from 'vue'
 
-const chain: ChainOfThoughtStepType[] = [
+const chain = [
   {
-    label: 'Understand the request',
-    content: 'Parse the user goal and identify constraints for the travel plan.',
-    status: 'complete',
+    icon: CheckCircle,
+    label: 'Gather context',
+    description: 'Review previous conversation turns and user goal.',
+    status: 'complete' as const,
   },
   {
-    label: 'Check destination weather',
-    content: 'Call the weather API for Kyoto for the requested dates.',
-    status: 'complete',
-    meta: 'Tool: weather.lookup',
+    icon: Search,
+    label: 'Search documentation',
+    description: 'Query API reference for itinerary endpoints.',
+    status: 'complete' as const,
   },
   {
-    label: 'Generate itinerary',
-    content: 'Produce a balanced schedule with culture, food, and rest.',
-    status: 'thinking',
+    icon: Clock,
+    label: 'Draft itinerary',
+    description: 'Assemble 3-day schedule with food and activities.',
+    status: 'active' as const,
   },
 ]
 
@@ -159,12 +162,14 @@ function handleSelect(item: SuggestionItem) {
             <ChainOfThoughtHeader>
               Travel Planning Process
             </ChainOfThoughtHeader>
+
             <ChainOfThoughtContent>
               <ChainOfThoughtStep
-                v-for="step in chain"
-                :key="step.label"
+                v-for="(step, index) in chain"
+                :key="`${step.label}-${index}`"
+                :icon="step.icon"
                 :label="step.label"
-                :description="step.content"
+                :description="step.description"
                 :status="step.status"
               />
             </ChainOfThoughtContent>

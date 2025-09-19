@@ -8,6 +8,27 @@ import {
   ChainOfThoughtStep,
 } from '@repo/elements'
 import { CheckCircle, Clock, Search } from 'lucide-vue-next'
+
+const chain = [
+  {
+    icon: CheckCircle,
+    label: 'Gather context',
+    description: 'Review previous conversation turns and user goal.',
+    status: 'complete' as const,
+  },
+  {
+    icon: Search,
+    label: 'Search documentation',
+    description: 'Query API reference for itinerary endpoints.',
+    status: 'complete' as const,
+  },
+  {
+    icon: Clock,
+    label: 'Draft itinerary',
+    description: 'Assemble 3-day schedule with food and activities.',
+    status: 'active' as const,
+  },
+]
 </script>
 
 <template>
@@ -79,6 +100,27 @@ import { CheckCircle, Clock, Search } from 'lucide-vue-next'
             label="Generate recommendations"
             description="Create personalized itinerary based on analysis."
             status="pending"
+          />
+        </ChainOfThoughtContent>
+      </ChainOfThought>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold mb-4">
+        Data-Driven Chain of Thought
+      </h3>
+      <ChainOfThought default-open>
+        <ChainOfThoughtHeader>
+          Travel Planning Process
+        </ChainOfThoughtHeader>
+        <ChainOfThoughtContent>
+          <ChainOfThoughtStep
+            v-for="(step, index) in chain"
+            :key="`${step.label}-${index}`"
+            :icon="step.icon"
+            :label="step.label"
+            :description="step.description"
+            :status="step.status"
           />
         </ChainOfThoughtContent>
       </ChainOfThought>

@@ -33,6 +33,7 @@ export { default as ChainOfThoughtSearchResults } from './chain-of-thought-searc
 export { default as ChainOfThoughtStep } from './chain-of-thought-step.vue'
 // Chain of Thought components
 export { default as ChainOfThought } from './chain-of-thought.vue'
+export type { ChainOfThoughtStatus, ChainOfThoughtStep } from './chain-of-thought/types'
 export { default as CodeBlockCopyButton } from './code-block-copy-button.vue'
 // Code block components
 export { default as CodeBlock } from './code-block.vue'
@@ -49,6 +50,7 @@ export * from './reasoning-context'
 export { default as ReasoningTrigger } from './reasoning-trigger.vue'
 // Reasoning components
 export { default as Reasoning } from './reasoning.vue'
+export type { ReasoningStep } from './reasoning/types'
 // Response component
 export { default as Response } from './response.vue'
 export { default as Source } from './source.vue'
