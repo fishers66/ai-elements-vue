@@ -55,24 +55,27 @@ import { CheckCircle, Clock, Search } from 'lucide-vue-next'
       <h3 class="text-lg font-semibold mb-4">
         Collapsed Chain of Thought
       </h3>
-      <ChainOfThought>
+      <ChainOfThought :default-open="false">
         <ChainOfThoughtHeader>
           Advanced Planning Process
         </ChainOfThoughtHeader>
         <ChainOfThoughtContent>
           <ChainOfThoughtStep
+            :icon="CheckCircle"
             label="Analyze user preferences"
             description="Extract key requirements from conversation history."
             status="complete"
           />
 
           <ChainOfThoughtStep
+            :icon="CheckCircle"
             label="Weather check"
             description="Verify May weather conditions in Kyoto."
             status="complete"
           />
 
           <ChainOfThoughtStep
+            :icon="Clock"
             label="Generate recommendations"
             description="Create personalized itinerary based on analysis."
             status="pending"

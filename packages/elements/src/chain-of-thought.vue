@@ -38,7 +38,9 @@ function setIsOpen(open: boolean) {
 
 const contextValue = computed<ChainOfThoughtContextValue>(() => ({
   isOpen: isOpen.value,
-  setIsOpen,
+  setIsOpen: (newOpen: boolean) => {
+    isOpen.value = newOpen
+  },
 }))
 
 provide(ChainOfThoughtContextKey, contextValue)

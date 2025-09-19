@@ -28,7 +28,6 @@ const chevronClass = computed(() => cn(
       'flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground',
       $props.class,
     )"
-    @click="context.value.setIsOpen(!context.value.isOpen)"
   >
     <Brain class="size-4" />
     <span class="flex-1 text-left">

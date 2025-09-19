@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<ChainOfThoughtStepProps>(), {
 const statusStyles = {
   complete: 'text-muted-foreground',
   active: 'text-foreground',
-  pending: 'text-muted-foreground/50',
+  pending: 'text-muted-foreground',
 }
 
 const stepClass = computed(() => cn(
