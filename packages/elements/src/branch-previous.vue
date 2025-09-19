@@ -18,9 +18,7 @@ if (!context) {
   throw new Error('BranchPrevious must be used within Branch')
 }
 
-const { goToPrevious, totalBranches } = context
-
-const isDisabled = computed(() => totalBranches <= 1)
+const isDisabled = computed(() => context.value.totalBranches <= 1)
 </script>
 
 <template>
@@ -36,7 +34,7 @@ const isDisabled = computed(() => totalBranches <= 1)
     size="icon"
     type="button"
     variant="ghost"
-    @click="goToPrevious"
+    @click="context.value.goToPrevious"
   >
     <slot>
       <ChevronLeft :size="14" />

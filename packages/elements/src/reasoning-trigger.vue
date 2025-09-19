@@ -26,10 +26,10 @@ function getThinkingMessage(isStreaming: boolean, duration?: number) {
   return `Thought for ${duration} seconds`
 }
 
-const thinkingMessage = computed(() => getThinkingMessage(context.isStreaming, context.duration))
+const thinkingMessage = computed(() => getThinkingMessage(context.value.isStreaming, context.value.duration))
 const chevronClass = computed(() => cn(
   'size-4 transition-transform',
-  context.isOpen ? 'rotate-180' : 'rotate-0',
+  context.value.isOpen ? 'rotate-180' : 'rotate-0',
 ))
 </script>
 

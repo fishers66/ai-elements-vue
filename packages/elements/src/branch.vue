@@ -2,7 +2,7 @@
 import type { VNode } from 'vue'
 import type { BranchContextValue } from './branch-context'
 import { cn } from '@repo/shadcn-vue/lib/utils'
-import { provide, ref } from 'vue'
+import { computed, provide, ref } from 'vue'
 import { BranchContextKey } from './branch-context'
 
 interface BranchProps {
@@ -37,14 +37,14 @@ function setBranches(newBranches: VNode[]) {
   branches.value = newBranches
 }
 
-const contextValue: BranchContextValue = {
+const contextValue = computed<BranchContextValue>(() => ({
   currentBranch: currentBranch.value,
   totalBranches: branches.value.length,
   goToPrevious,
   goToNext,
   branches: branches.value,
   setBranches,
-}
+}))
 
 provide(BranchContextKey, contextValue)
 </script>

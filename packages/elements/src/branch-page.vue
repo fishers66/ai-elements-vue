@@ -16,9 +16,7 @@ if (!context) {
   throw new Error('BranchPage must be used within Branch')
 }
 
-const { currentBranch, totalBranches } = context
-
-const pageText = computed(() => `${currentBranch + 1} of ${totalBranches}`)
+const pageText = computed(() => `${context.value.currentBranch + 1} of ${context.value.totalBranches}`)
 </script>
 
 <template>

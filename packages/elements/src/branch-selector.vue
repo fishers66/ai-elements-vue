@@ -17,10 +17,8 @@ if (!context) {
   throw new Error('BranchSelector must be used within Branch')
 }
 
-const { totalBranches } = context
-
 // Don't render if there's only one branch
-const shouldRender = computed(() => totalBranches > 1)
+const shouldRender = computed(() => context.value.totalBranches > 1)
 </script>
 
 <template>

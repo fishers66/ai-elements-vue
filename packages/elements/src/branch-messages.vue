@@ -17,14 +17,12 @@ if (!context) {
   throw new Error('BranchMessages must be used within Branch')
 }
 
-const { currentBranch, setBranches } = context
-
 // Watch for slot changes and update branches
 watch(
   () => slots.default?.(),
   (newSlots) => {
     if (newSlots) {
-      setBranches(newSlots)
+      context.value.setBranches(newSlots)
     }
   },
   { immediate: true },
@@ -37,7 +35,7 @@ watch(
     :key="index"
     :class="cn(
       'grid gap-2 overflow-hidden [&>div]:pb-0',
-      index === currentBranch ? 'block' : 'hidden',
+      index === context.value.currentBranch ? 'block' : 'hidden',
     )"
   >
     <component :is="slot" />
