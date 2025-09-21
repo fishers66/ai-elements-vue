@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Response } from '@repo/elements'
 import { Message, MessageAvatar, MessageContent } from '@repo/elements/message'
-import { Response } from '@repo/elements/response'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const assistantMessageTokens = [

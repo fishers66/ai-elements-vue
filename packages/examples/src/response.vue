@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Response } from '@repo/elements/response'
+import { Response } from '@repo/elements'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const tokens = [
